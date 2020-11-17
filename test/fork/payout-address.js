@@ -1,10 +1,11 @@
 const { artifacts, web3, network } = require('hardhat');
 const { time } = require('@openzeppelin/test-helpers');
-const { to } = require('../utils').helpers;
+const { hex, logEvents, to } = require('../utils').helpers;
 
 const NXMaster = artifacts.require('NXMaster');
 const MemberRoles = artifacts.require('MemberRoles');
 const Governance = artifacts.require('Governance');
+const OwnedUpgradeabilityProxy = artifacts.require('OwnedUpgradeabilityProxy');
 
 describe('payout address update', function () {
 
@@ -46,7 +47,7 @@ describe('payout address update', function () {
     console.log('Submitting votes');
 
     for (const proposalID of [upgradeMrProposal, upgradeCrProposal]) {
-      for (let i = 3; i < boardMembers.length; i++) {
+      for (let i = 0; i < boardMembers.length; i++) {
 
         console.log(`Voting for Board member ${i} ${boardMembers[i]}...`);
         const [, voteErr] = await to(gv.submitVote(proposalID, 1, { from: boardMembers[i] }));
@@ -60,7 +61,7 @@ describe('payout address update', function () {
       }
 
       await time.increase(604800);
-      await gv.closeProposal(proposalID, { from: boardMembers[0] });
+      logEvents(await gv.closeProposal(proposalID, { from: boardMembers[0] }));
     }
 
     {
@@ -76,5 +77,11 @@ describe('payout address update', function () {
       launchedOnAfter: launchedOnAfter.toString(),
     });
 
+    const mrProxy = await OwnedUpgradeabilityProxy.at(nameToAddressMap['MR']);
+    const newMrAddress = await mrProxy.implementation();
+    const newCrAddress = await master.getLatestAddress(hex('CR'));
+
+    assert.strictEqual(newMrAddress.toLowerCase(), '0xcafeae915ee47191fb14782f71c515a840d1f2c9', 'mr not ok');
+    assert.strictEqual(newCrAddress.toLowerCase(), '0xcafeaa00121d57284793e221ca55945d23f46657', 'cr not ok');
   });
 });

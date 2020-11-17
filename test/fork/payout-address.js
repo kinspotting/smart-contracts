@@ -66,7 +66,7 @@ describe('payout address update', function () {
 
     {
       const isOwnerAMember = await master.isMember(boardMembers[0]);
-      assert(isOwnerAMember, 'Before: Owner should be a member');
+      assert(isOwnerAMember, 'After: Owner should be a member');
     }
 
     const launchedOnAfter = await mr.launchedOn();
@@ -83,5 +83,10 @@ describe('payout address update', function () {
 
     assert.strictEqual(newMrAddress.toLowerCase(), '0xcafeae915ee47191fb14782f71c515a840d1f2c9', 'mr not ok');
     assert.strictEqual(newCrAddress.toLowerCase(), '0xcafeaa00121d57284793e221ca55945d23f46657', 'cr not ok');
+
+    const yNftCPA = await mr.getClaimPayoutAddress('0x181Aea6936B407514ebFC0754A37704eB8d98F91');
+    const arNFT = '0x1337DEF1e9c7645352D93baf0b789D04562b4185';
+
+    assert.strictEqual(yNftCPA.toLowerCase(), arNFT.toLowerCase(), 'yNFT CPA is not arNFT!');
   });
 });

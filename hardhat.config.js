@@ -22,13 +22,16 @@ const {
 
 const networks = {
   hardhat: {
-    accounts: {
-      count: 100,
-      accountsBalance: toWei('100000'),
-    },
+    accounts: { count: 100, accountsBalance: toWei('100000') },
     allowUnlimitedContractSize: true,
     blockGasLimit: 12e9,
   },
+};
+
+if (process.env.TEST_ENV_FORK) {
+  networks.hardhat.forking = {
+    url: process.env.TEST_ENV_FORK
+  };
 };
 
 if (process.env.MAINNET_PROVIDER_URL) {

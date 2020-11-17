@@ -29,10 +29,8 @@ const networks = {
 };
 
 if (process.env.TEST_ENV_FORK) {
-  networks.hardhat.forking = {
-    url: process.env.TEST_ENV_FORK
-  };
-};
+  networks.hardhat.forking = { url: process.env.TEST_ENV_FORK };
+}
 
 if (process.env.MAINNET_PROVIDER_URL) {
   networks.mainnet = { accounts: [MAINNET_ACCOUNT_KEY], url: MAINNET_PROVIDER_URL };

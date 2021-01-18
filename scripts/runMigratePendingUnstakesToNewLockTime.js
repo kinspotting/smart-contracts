@@ -10,7 +10,7 @@ async function run () {
   const { account: owner, loader, network, provider } = await init();
   const web3 = new Web3(provider);
 
-  const POOLED_STAKING_ADDRESS = '';
+  const POOLED_STAKING_ADDRESS = '0x84edffa16bb0b9ab1163abb0a13ff0744c11272f';
 
   const ps = loader.fromArtifact('PooledStaking').at(POOLED_STAKING_ADDRESS);
 
